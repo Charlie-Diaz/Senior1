@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <!-- <meta charset="UTF-8" /> -->
+    <!-- <script src="https://cdn.plot.ly/plotly-2.9.0.min.js"></script> -->
+    <!-- <meta http-equiv="X-UA-Compatible" content="IE=edge" /> -->
+    <!-- <meta name="viewport" content="width=device-width, initial-scale=1.0" /> -->
+   <meta  http-equiv="content-type" content="text/html; charset=UTF-8"/>
+   <script src="https://cdn.plot.ly/plotly-2.9.0.min.js"></script> 
+   <link rel="stylesheet" href="style.css" />
+   </head>
+   <body>
+    <title>Vibration Monitor</title>
+    <div id="myDiv"></div>
+    <p>X-axis: <span id="xaxis"></span></p>
+    <p>Y-axis: <span id="yaxis"></span></p>
+    <p>Z-axis: <span id="zaxis"></span></p>
+    <p>Time: <span id="time"></span></p>
+    <div id="all_graphs" class="container">
+      <div id="chart" class="x">
+        <script>
+          var layout = {title:'X-Acceleration',width:500,height:500};
+          var aX, aY, aZ;
+          const url = "https://08ba-201-146-156-169.ngrok.io/data";
+          getData();
+          async function getData() {
+            
+            const response = await fetch(url);
+            const data = await response.json();
+            const { x, y, z, time } = data;
+            // console.log(data.x)
+            document.getElementById("xaxis").textContent = x;
+            document.getElementById("yaxis").textContent = y;
+            document.getElementById("zaxis").textContent = z;
+            document.getElementById("time").textContent = time;
+            aX = data.x;
+            aY = data.y;
+            aZ = data.z;
+            // console.log("hereee");
+            // console.log(x);
+            console.log("Hey " + aX);
+            return aX,aY,aZ;
+            // console.log(y);
+            // console.log(z);
+            // return x;
+          }
+          // setInterval(send(), 1);
+
+
+          Plotly.newPlot('chart',[{
+              y:[getData()],
+              type:'line'
+          }],layout);
+
+          var cnt = 0;
+
+          setInterval(function(){
+
+              Plotly.extendTraces('chart',{ y:[[aX]]}, [0]);
+              getData();
+              cnt++;
+              if(cnt > 500) {
+                  Plotly.relayout('chart',{
+                      xaxis: {
+                          // range: [cnt-500,cnt]
+                      }
+                  });
+              }
+          },25);
+        </script>
+      </div>
+
+      <div id="charty" class="y">
+        <script>
+          var layout = {title:'Y-Acceleration',width:500,height:500};
+        Plotly.newPlot('charty',[{
+            y:[getData()],
+            type:'line'
+        }],layout);
+
+        var cnt = 0;
+
+        setInterval(function(){
+
+            Plotly.extendTraces('charty',{ y:[[aY]]}, [0]);
+            getData();
+            cnt++;
+            if(cnt > 500) {
+                Plotly.relayout('charty',{
+                    xaxis: {
+                        // range: [cnt-500,cnt]
+                    }
+                });
+            }
+        },25);
+        </script>
+      </div>
+      <div id="chartz" class="z">
+        <script>
+        var layout = {title:'Z-Acceleration',width:500,height:500};
+        Plotly.newPlot('chartz',[{
+            y:[getData()],
+            type:'line',
+            line: {
+              color: 'red',
+              width:3
+            }
+        }],  layout);
+
+        var cnt = 0;
+
+        setInterval(function(){
+
+            Plotly.extendTraces('chartz',{ y:[[aZ]]}, [0]);
+            getData();
+            cnt++;
+            if(cnt > 500) {
+                Plotly.relayout('chartz',{
+                    xaxis: {
+                        // range: [cnt-500,cnt]
+                    }
+                });
+            }
+        },25);
+        </script>
+      </div>
+      </div>
+      <div id = "allcharts">
+        <script>
+          var layout = {title:'All Axis'};
+          Plotly.newPlot('allcharts',[{
+              y:[getData()],
+              type:'line',
+              line: {
+                color: 'red',
+                width:3
+              }
+          }],  layout);
+  
+          var cnt = 0;
+  
+          setInterval(function(){
+  
+              Plotly.extendTraces('allcharts',{ y:[[aZ], [aX], [aY]]}, [0],[1],[2]);
+              getData();
+              cnt++;
+              if(cnt > 500) {
+                  Plotly.relayout('allcharts',{
+                      xaxis: {
+                          // range: [cnt-500,cnt]
+                      }
+                  });
+              }
+          },25);
+          </script>
+      </div>
+    </div>
+  </div>
+  </head>
+  <body>
+    <div id="app"></div>
+    <script src="https://unpkg.com/vue@next"></script>
+    <script>
+ 
+    // </script>
+    <script src="app.js"></script>
+  </body>
+
+  <style>
+    .container {
+      display: flex;
+    }
+
+    .x {
+      flex: 3;
+      text-align: center;
+      margin: 10px;
+    }
+
+    .y {
+      flex: 3;
+      text-align: center;
+      margin: 10px;
+    }
+
+    .z {
+      flex: 3;
+      text-align: center;
+      margin: 10px;
+    }
+  </style>
+</html>
