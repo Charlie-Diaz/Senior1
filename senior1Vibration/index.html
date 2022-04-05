@@ -1,27 +1,32 @@
 <!DOCTYPE html>
 <html lang="en">
   <head>
-    <!-- <meta charset="UTF-8" /> -->
-    <!-- <script src="https://cdn.plot.ly/plotly-2.9.0.min.js"></script> -->
-    <!-- <meta http-equiv="X-UA-Compatible" content="IE=edge" /> -->
-    <!-- <meta name="viewport" content="width=device-width, initial-scale=1.0" /> -->
    <meta  http-equiv="content-type" content="text/html; charset=UTF-8"/>
    <script src="https://cdn.plot.ly/plotly-2.9.0.min.js"></script> 
    <link rel="stylesheet" href="style.css" />
    </head>
    <body>
-    <title>Vibration Monitor</title>
-    <div id="myDiv"></div>
-    <p>X-axis: <span id="xaxis"></span></p>
-    <p>Y-axis: <span id="yaxis"></span></p>
-    <p>Z-axis: <span id="zaxis"></span></p>
-    <p>Time: <span id="time"></span></p>
+    <header class="header">
+      <h1 class="logo"><a href="#">3D Printer Vibration Monitor</a></h1>
+        <ul class="main-nav">
+            <li><a href="index.html">Live Data</a></li>
+            <li><a href="analysis.html">Analysis</a></li>
+            <li><a href="login.html">Sign Out</a></li>
+        </ul>
+    </header> 
+     <h1 class="title">Live Data</h1>
+    <div class="values">
+      <p class="readingx">X-axis: <span id="xaxis"></span></p>
+      <p class="reading">Y-axis: <span id="yaxis"></span></p>
+      <p class="reading">Z-axis: <span id="zaxis"></span></p>
+      <p>Time: <span id="time"></span></p>
+    </div>
     <div id="all_graphs" class="container">
       <div id="chart" class="x">
         <script>
-          var layout = {title:'X-Acceleration',width:500,height:500};
+          var layout = {title:'X-Acceleration',width:500,height:500,yaxis:{range:[-2,2]}};
           var aX, aY, aZ;
-          const url = "https://08ba-201-146-156-169.ngrok.io/data";
+          const url = "https://7361-2607-fb90-cb8d-c1de-5517-88f9-c7e8-d9f.ngrok.io/data";
           getData();
           async function getData() {
             
@@ -46,11 +51,13 @@
           }
           // setInterval(send(), 1);
 
-
-          Plotly.newPlot('chart',[{
+          var traceX = {
               y:[getData()],
-              type:'line'
-          }],layout);
+              type:'line',
+              name: 'X'
+          }
+
+          Plotly.newPlot('chart',[traceX],layout);
 
           var cnt = 0;
 
@@ -58,25 +65,27 @@
 
               Plotly.extendTraces('chart',{ y:[[aX]]}, [0]);
               getData();
-              cnt++;
-              if(cnt > 500) {
+              // cnt++;
+              // if(cnt > 500) {
                   Plotly.relayout('chart',{
                       xaxis: {
                           // range: [cnt-500,cnt]
                       }
                   });
-              }
-          },25);
+              
+          },1);
         </script>
       </div>
 
       <div id="charty" class="y">
         <script>
-          var layout = {title:'Y-Acceleration',width:500,height:500};
-        Plotly.newPlot('charty',[{
+          var layout = {title:'Y-Acceleration',width:500,height:500,yaxis:{range:[-2,5]}};
+          var traceY = {
             y:[getData()],
-            type:'line'
-        }],layout);
+            type:'line',
+            name: 'Y'
+          }
+        Plotly.newPlot('charty',[traceY],layout);
 
         var cnt = 0;
 
@@ -84,28 +93,30 @@
 
             Plotly.extendTraces('charty',{ y:[[aY]]}, [0]);
             getData();
-            cnt++;
-            if(cnt > 500) {
+            // cnt++;
+            // if(cnt > 500) {
                 Plotly.relayout('charty',{
                     xaxis: {
                         // range: [cnt-500,cnt]
                     }
                 });
-            }
-        },25);
+            // }
+        },1);
         </script>
       </div>
       <div id="chartz" class="z">
         <script>
-        var layout = {title:'Z-Acceleration',width:500,height:500};
-        Plotly.newPlot('chartz',[{
-            y:[getData()],
+        var layout = {title:'Z-Acceleration',width:500,height:500,yaxis:{range:[5,12]}};
+        var traceZ = {
+          y:[getData()],
             type:'line',
             line: {
               color: 'red',
               width:3
-            }
-        }],  layout);
+            },
+            name: 'Z'
+        }
+        Plotly.newPlot('chartz',[traceZ],  layout);
 
         var cnt = 0;
 
@@ -113,35 +124,28 @@
 
             Plotly.extendTraces('chartz',{ y:[[aZ]]}, [0]);
             getData();
-            cnt++;
-            if(cnt > 500) {
+            // cnt++;
+            // if(cnt > 500) {
                 Plotly.relayout('chartz',{
                     xaxis: {
                         // range: [cnt-500,cnt]
                     }
                 });
-            }
-        },25);
+            // }
+        },1);
         </script>
       </div>
       </div>
-      <div id = "allcharts">
+      <!-- <div id = "allcharts">
         <script>
           var layout = {title:'All Axis'};
-          Plotly.newPlot('allcharts',[{
-              y:[getData()],
-              type:'line',
-              line: {
-                color: 'red',
-                width:3
-              }
-          }],  layout);
+          Plotly.newPlot('allcharts',[traceX, traceY, traceZ],  layout);
   
           var cnt = 0;
   
           setInterval(function(){
   
-              Plotly.extendTraces('allcharts',{ y:[[aZ], [aX], [aY]]}, [0],[1],[2]);
+              Plotly.extendTraces('allcharts',{ y:[[aZ]]}, [0]);
               getData();
               cnt++;
               if(cnt > 500) {
@@ -151,7 +155,7 @@
                       }
                   });
               }
-          },25);
+          },25); -->
           </script>
       </div>
     </div>
@@ -160,13 +164,29 @@
   <body>
     <div id="app"></div>
     <script src="https://unpkg.com/vue@next"></script>
-    <script>
- 
-    // </script>
-    <script src="app.js"></script>
+    <!-- <script src="app.js"></script> -->
   </body>
 
   <style>
+    @import url('https://fonts.googleapis.com/css?family=Source+Sans+Pro');
+   .title{
+    font-family: 'Source Sans Pro', sans-serif;
+    font-size: 30px;
+    margin: 3px;
+    margin-top: 15px;
+    margin-left: 15px;
+   }
+   .values{
+     display: flex;
+     flex: 3;
+   }
+   .readingx{
+     margin-left: 15px;
+     margin-right:25px ;
+   }
+   .reading{
+     margin-right:25px ;
+   }
     .container {
       display: flex;
     }
@@ -188,5 +208,107 @@
       text-align: center;
       margin: 10px;
     }
+    
+* {
+	box-sizing: border-box;
+}
+body {
+	font-family: 'Source Sans Pro', sans-serif;
+	line-height: 1.6;
+	margin: 0;
+	min-height: 100vh;
+}
+ul {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+
+h2,
+h3,
+a {
+	color: #34495e;
+}
+
+a {
+	text-decoration: none;
+}
+
+
+
+.logo {
+	margin: 0;
+	font-size: 1.45em;
+}
+
+.main-nav {
+	margin-top: 5px;
+
+}
+.logo a,
+.main-nav a {
+	padding: 10px 15px;
+	text-transform: uppercase;
+	text-align: center;
+	display: block;
+}
+
+.main-nav a {
+	color: #34495e;
+	font-size: .99em;
+}
+
+.main-nav a:hover {
+	color: #718daa;
+}
+
+
+
+.header {
+	padding-top: .5em;
+	padding-bottom: .5em;
+	border: 1px solid #a2a2a2;
+	background-color: #f4f4f4;
+	/* -webkit-box-shadow: 0px 0px 14px 0px rgba(0,0,0,0.75);
+	-moz-box-shadow: 0px 0px 14px 0px rgba(0,0,0,0.75);
+	box-shadow: 0px 0px 14px 0px rgba(0,0,0,0.75);
+	-webkit-border-radius: 5px;
+	-moz-border-radius: 5px; */
+	border-radius: 5px;
+}
+
+
+/* ================================= 
+  Media Queries
+==================================== */
+
+
+
+
+@media (min-width: 769px) {
+	.header,
+	.main-nav {
+		display: flex;
+	}
+	.header {
+		flex-direction: column;
+		align-items: center;
+		width: 100%;
+		margin: 0 auto;
+		max-width: 100%;
+	
+	}
+
+}
+
+@media (min-width: 1025px) {
+	.header {
+		flex-direction: row;
+		justify-content: space-between;
+	}
+
+}
+
   </style>
 </html>
